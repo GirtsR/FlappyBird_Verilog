@@ -10,7 +10,7 @@ module clock_divider // By default generates 1Hz clock
 	 
 	 always @(posedge clk)
 	 begin
-		if(counter > DIVIDER)
+		if(counter >= DIVIDER)
 		begin
 			clk_reg <= ~clk_reg;
 			counter <= 0;
