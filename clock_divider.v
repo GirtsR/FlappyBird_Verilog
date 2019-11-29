@@ -23,7 +23,7 @@ module clock_divider(
 		output clk_out
     );
 	 
-	 parameter DIVIDER = 32b'50000000; // By default generates 1Hz clock
+	 parameter DIVIDER = 32'd50000000; // By default generates 1Hz clock
 
 	 reg clk_reg = 0;
 	 reg[31:0] counter = 32'd0;
