@@ -31,6 +31,9 @@ module top(
 	output [7:0] led,
 	output spacebar_pressed
 	);
+	
+	localparam SCREEN_HEIGHT = 640,
+		SCREEN_WIDTH = 480;
 
 	wire [9:0] x;  
 	wire [9:0] y;
@@ -50,25 +53,29 @@ module top(
 		.led(led),
 		.spacebar_pressed(spacebar_pressed)
 	);
+	
+	wire [9:0] velocity_out;
+	
+	velocity velocity (
+		.clk(clk),
+		.button_pressed(spacebar_pressed),
+		.velocity(velocity_out)
+	);
 
 	wire game_clk_g;
 	clock_divider #(32'd500000) div_g ( .clk(clk), .clk_out(game_clk_g));
 
-	reg[9:0] g_up = 10'd400;
-	reg[9:0] g_down = 10'd440;
+	reg[9:0] g_up = 10'd440;
+	reg[9:0] g_down = 10'd480;
 
 	always @(posedge game_clk_g)
 	begin
-		g_up = g_up + 1;
-		g_down = g_down + 1;
-
-		if (g_down > 480)
+		if (g_down != SCREEN_HEIGHT && g_up != 0)
 		begin
-			g_up = 0;
-			g_down = 40;
+			g_up = g_up - velocity_out;
+			g_down = g_down - velocity_out;
 		end
 	end
-
 
 	reg game_clk_b = 0;
 	reg[31:0] counter_b = 32'd0;
