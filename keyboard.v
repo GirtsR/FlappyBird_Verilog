@@ -53,7 +53,7 @@ module keyboard(
 	// 50MHz clock dividers
 	localparam
 		MILLISECOND = 32'd50000,
-		DELAY = 32'd50000000;
+		SECOND = 32'd50000000;
 		
 	// Debouncer initialization
 	reg reset = 1;
@@ -123,12 +123,12 @@ module keyboard(
 					keycode_pre = keycode;	// Set previous and current keycode
 					keycode = d_reg[8:1];
 					
-					state_next = idle;
+					state_next = IDLE;
 											
 					if (keycode_pre == RELEASE) // Space was released
 					begin
 						reset = 1;
-						state_next = delay;
+						state_next = DELAY;
 						space_pressed_reg = 0;
 					end
 					else if (keycode == SPACE)	// Space was pressed
@@ -140,9 +140,9 @@ module keyboard(
 			DELAY:
 			begin
 				reset = 0;
-				if (counter == millisecond * 50)		// 50ms second delay
+				if (counter == MILLISECOND * 50)		// 50ms second delay
 				begin
-					state_next = idle;
+					state_next = IDLE;
 				end
 			end
 		endcase
