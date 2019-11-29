@@ -1,0 +1,8 @@
+NET "clk"  LOC = "C9"  ;
+
+NET "hsync"  LOC = "F15"  ;
+NET "vsync"  LOC = "F14"  ;
+
+NET "red"  LOC = "H14"  ;
+NET "green"  LOC = "H15"  ;
+NET "blue" LOC = "G15" ;
