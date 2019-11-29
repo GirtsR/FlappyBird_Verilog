@@ -41,9 +41,9 @@ module keyboard(
 	
 	// 3 states for receiving data
 	localparam 
-		idle = 2'b00,
-		receive = 2'b01,
-		delay = 2'b10;
+		IDLE = 2'b00,
+		RECEIVE = 2'b01,
+		DELAY = 2'b10;
 		
 	// Used keycodes
 	localparam 
@@ -52,8 +52,8 @@ module keyboard(
 	
 	// 50MHz clock dividers
 	localparam
-		millisecond = 32'd50000,
-		second = 32'd50000000;
+		MILLISECOND = 32'd50000,
+		DELAY = 32'd50000000;
 		
 	// Debouncer initialization
 	reg reset = 1;
@@ -61,7 +61,7 @@ module keyboard(
 	debounce deb(.clk(clk),.reset(reset),.counter(counter));
 	
 	// State machine registers
-	reg [1:0] state_reg, state_next = idle; // Current and next state
+	reg [1:0] state_reg, state_next = IDLE; // Current and next state
 	reg [3:0] n_reg, n_next = 0;            // Current and next bit number 
 	reg [10:0] d_reg, d_next = 0;           // Register to shift in received data
 	
@@ -102,15 +102,15 @@ module keyboard(
 		d_next = d_reg;
 		
 		case (state_reg)
-			idle:
+			IDLE:
 			begin
 				if (neg_edge)                 // Start bit received
 				begin
 					n_next = 0;             // set bit count down to 10
-					state_next = receive;	// go to receive state
+					state_next = RECEIVE;	// go to receive state
 				end
 			end
-			receive:  // Receive 8 data, 1 parity, and 1 stop bit
+			RECEIVE:  // Receive 8 data, 1 parity, and 1 stop bit
 			begin
 				if (neg_edge)                         // Data bit received
 				begin
@@ -137,7 +137,7 @@ module keyboard(
 					end
 				end
 			end
-			delay:
+			DELAY:
 			begin
 				reset = 0;
 				if (counter == millisecond * 50)		// 50ms second delay
