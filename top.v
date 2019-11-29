@@ -51,19 +51,8 @@ module top(
 		.spacebar_pressed(spacebar_pressed)
 	);
 
-	reg game_clk_g = 0;
-	reg[31:0] counter_g = 32'd0;
-	localparam MILISECOND = 32'd500000;
-	always @(posedge clk)
-	begin
-		if(counter_g > MILISECOND) 	
-		begin
-			game_clk_g <= ~game_clk_g;
-			counter_g <= 0;
-		end
-		else
-			counter_g <= counter_g + 1;
-	end
+	wire game_clk_g;
+	clock_divider #(32'd500000) div_g ( .clk(clk), .clk_out(game_clk_g));
 
 	reg[9:0] g_up = 10'd400;
 	reg[9:0] g_down = 10'd440;
