@@ -27,26 +27,26 @@ module game(
 		output green_ch,
 		output blue_ch
     );
+	localparam BIRD_POS_X = 100;
 	
 	wire game_clk_g;
 	clock_divider #(32'd500000) div_g ( .clk(clk), .clk_out(game_clk_g));
 
-	reg[9:0] g_up = 10'd400;
-	reg[9:0] g_down = 10'd440;
-
+	wire [9:0] position;
+	
+	position bird_position (
+		.clk(clk),
+		.button_pressed(btn_pressed),
+		.position(position)
+	);
+	
+	reg[9:0] g_up = 10'd0;
+	reg[9:0] g_down = 10'd40;
+	
 	always @(posedge game_clk_g)
 	begin
-		if(btn_pressed)
-		begin		
-			g_up = g_up + 10;
-			g_down = g_down + 10;
-
-			if (g_down > 480)
-			begin
-				g_up = 0;
-				g_down = 40;
-			end
-		end
+		g_up = position - 40;
+		g_down = position;
 	end
 
 	wire game_clk_b;
@@ -71,8 +71,8 @@ module game(
 	end
 
 
-	// Four overlapping squares
-	assign sq_g = ((x_crd > 300) & (x_crd < 340) & (y_crd > g_up) & (y_crd < g_down)) ? 1 : 0;
+	// Draw the squares
+	assign sq_g = ((x_crd > BIRD_POS_X) & (x_crd < BIRD_POS_X + 40) & (y_crd > g_up) & (y_crd < g_down)) ? 1 : 0;
 	assign sq_b = ((x_crd > 200) & (x_crd < 240) & (y_crd > b_up) & (y_crd < b_down)) ? 1 : 0;
 	
 	assign red_ch = 0;

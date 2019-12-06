@@ -140,7 +140,7 @@ module keyboard(
 			DELAY:
 			begin
 				reset = 0;
-				if (counter == MILLISECOND * 50)		// 50ms second delay
+				if (counter == MILLISECOND * 10)		// 10ms second delay
 				begin
 					state_next = IDLE;
 				end

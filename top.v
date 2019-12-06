@@ -53,14 +53,6 @@ module top(
 		.led(led),
 		.spacebar_pressed(spacebar_pressed)
 	);
-	
-	wire [9:0] velocity_out;
-	
-	velocity velocity (
-		.clk(clk),
-		.button_pressed(spacebar_pressed),
-		.velocity(velocity_out)
-	);
 
 	game flappy_bird(
 			.clk(clk),
