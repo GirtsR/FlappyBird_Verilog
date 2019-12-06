@@ -30,7 +30,7 @@ module game(
 	localparam BIRD_POS_X = 100;
 	
 	wire game_clk_g;
-	clock_divider #(32'd500000) div_g ( .clk(clk), .clk_out(game_clk_g));
+	clock_divider #(32'd100000) div_g ( .clk(clk), .clk_out(game_clk_g));
 
 	wire [9:0] position;
 	
@@ -62,7 +62,7 @@ module game(
 			b_up = b_up + 1;
 			b_down = b_down + 1;
 
-			if (b_down > 480)
+			if (b_down >= 480)
 			begin
 				b_up = 0;
 				b_down = 40;
@@ -73,9 +73,9 @@ module game(
 
 	// Draw the squares
 	assign sq_g = ((x_crd > BIRD_POS_X) & (x_crd < BIRD_POS_X + 40) & (y_crd > g_up) & (y_crd < g_down)) ? 1 : 0;
-	assign sq_b = ((x_crd > 200) & (x_crd < 240) & (y_crd > b_up) & (y_crd < b_down)) ? 1 : 0;
+//	assign sq_b = ((x_crd > 200) & (x_crd < 240) & (y_crd > b_up) & (y_crd < b_down)) ? 1 : 0;
 	
 	assign red_ch = 0;
 	assign green_ch = sq_g;
-	assign blue_ch = sq_b;
+	assign blue_ch = 0;
 endmodule
