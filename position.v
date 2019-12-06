@@ -5,7 +5,7 @@
 // 
 // Create Date:    11:18:38 11/29/2019 
 // Design Name: 
-// Module Name:    velocity 
+// Module Name:    position 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -40,12 +40,12 @@ module position(
 	reg should_jump = 1;
 	always @(posedge clk_out)
 	begin
-		if(button_pressed && should_jump)
+		if (button_pressed && should_jump)
 		begin		
 			should_jump = 0;
 			velocity = VELOCITY_ON_PRESS;
 		end
-		else if(!button_pressed)
+		else if (!button_pressed)
 		begin
 			should_jump = 1;
 		end
