@@ -25,8 +25,8 @@ module vga_timing(
 	assign o_vs = ~((v_count >= VS_STA) & (v_count < VS_END));
 
 	// keep x and y bound within the active pixels
-	assign o_x = (h_count < HA_STA) ? 0 : (h_count - HA_STA);
-	assign o_y = (v_count >= VA_END) ? (VA_END - 1) : (v_count);
+	assign o_x = (h_count < HA_STA) ? 0 : (h_count - HA_STA - 1);
+	assign o_y = (v_count > VA_END) ? VA_END : v_count;
 
 	wire clk_25mhz;	
 	clock_divider #(32'd2) div (.clk(clk), .clk_out(clk_25mhz));
@@ -35,16 +35,16 @@ module vga_timing(
 	begin
 		if (clk_25mhz)  // once per pixel
 		begin
-			if (h_count == LINE)  // end of line
+			if (h_count >= LINE)  // end of line
 			begin
-				h_count <= 0;
-				v_count <= v_count + 1;
+				h_count = 0;
+				v_count = v_count + 1;
 			end
 			else 
-				h_count <= h_count + 1;
+				h_count = h_count + 1;
 
 			if (v_count == SCREEN)  // end of screen
-				v_count <= 0;
+				v_count = 0;
 		end
 	end
 

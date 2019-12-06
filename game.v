@@ -49,33 +49,12 @@ module game(
 		g_down = position;
 	end
 
-	wire game_clk_b;
-	clock_divider #(32'd100000) div_b ( .clk(clk), .clk_out(game_clk_b));
-
-	reg[9:0] b_up = 10'd400;
-	reg[9:0] b_down = 10'd440;
-
-	always @(posedge game_clk_b)
-		if(btn_pressed)
-		begin			
-			begin
-			b_up = b_up + 1;
-			b_down = b_down + 1;
-
-			if (b_down >= 480)
-			begin
-				b_up = 0;
-				b_down = 40;
-			end
-		end
-	end
-
 
 	// Draw the squares
-	assign sq_g = ((x_crd > BIRD_POS_X) & (x_crd < BIRD_POS_X + 40) & (y_crd > g_up) & (y_crd < g_down)) ? 1 : 0;
-//	assign sq_b = ((x_crd > 200) & (x_crd < 240) & (y_crd > b_up) & (y_crd < b_down)) ? 1 : 0;
+	assign sq_g = ((x_crd >= BIRD_POS_X) & (x_crd <= BIRD_POS_X + 40) & (y_crd >= g_up) & (y_crd <= g_down));
+	assign back = (x_crd > 0) & (x_crd < 640) & (y_crd >= 0) & (y_crd < 480);
 	
 	assign red_ch = 0;
 	assign green_ch = sq_g;
-	assign blue_ch = 0;
+	assign blue_ch = back;
 endmodule
