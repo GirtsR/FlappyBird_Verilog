@@ -24,11 +24,11 @@ module position(
 	output [9:0] position
 	);
 	
-	localparam VELOCITY_ON_PRESS = 32,	// Velocity when Space is pressed
+	localparam VELOCITY_ON_PRESS = 20,	// Velocity when Space is pressed
 		POS_MAX = 479,	// Bottom of the screen
 		POS_MIN = 40,	// Top of the screen
-		GRAVITY = 4,	// Speed removed every 10ms
-		VELOCITY_MIN = -8,	// Max falling speed
+		GRAVITY = 2,	// Speed removed every 10ms
+		VELOCITY_MIN = -10,	// Max falling speed
 		UPDATE_FREQUENCY = 500000; // 10ms
 		
 	wire clk_out;
