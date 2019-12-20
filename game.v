@@ -62,7 +62,6 @@ module game(
 	// Pipe obstacle generation
 	reg reset_score = 0;
 	reg reset_physics = 1;	// Game starts when space is pressed
-	wire obs1en, obs2en, obs3en;
 	wire [6:0] score;
 	wire [9:0] obs1x, obs1y, obs2x, obs2y, obs3x, obs3y;
 	obstacle_generator obs_gen (
@@ -70,9 +69,6 @@ module game(
 		.randombit(random),
 		.reset_score(reset_score),
 		.reset_physics(reset_physics),
-		.obs1en(obs1en),
-		.obs2en(obs2en),
-		.obs3en(obs3en),
 		.score(score),
 		.obs1x(obs1x),
 		.obs1y(obs1y),
@@ -82,10 +78,21 @@ module game(
 		.obs3y(obs3y)
 	);
 	
-	always @(posedge game_clk_g)
-	begin
-		if (btn_pressed && reset_physics) reset_physics = 0;
+	assign bird_max_x = BIRD_POS_X + BIRD_SIZE;
+	
+	always @(posedge clk)
+	begin 
+	if (btn_pressed && reset_physics) reset_physics = 0;
+	
+	if (reset_physics == 0)
+	begin 
+		reset_physics = ((bird_max_x >= obs1x - 40 & bird_max_x <= obs1x) | (BIRD_POS_X >= obs1x - 40 & BIRD_POS_X <= obs1x)) & (bird_up < obs1y - 70 | bird_down > obs1y + 70) |
+							((bird_max_x >= obs2x - 40 & bird_max_x <= obs2x) | (BIRD_POS_X >= obs2x - 40 & BIRD_POS_X <= obs2x))& (bird_up < obs2y - 70 | bird_down > obs2y + 70) |
+							((bird_max_x >= obs3x - 40 & bird_max_x <= obs3x) | (BIRD_POS_X >= obs3x - 40 & BIRD_POS_X <= obs3x)) & (bird_up < obs3y - 70 | bird_down > obs3y + 70);
+	
+		reset_score = reset_physics;
 	end
+	end					 
 
 	assign score_out = score;
 	
@@ -100,6 +107,7 @@ module game(
 	
 	// Draw the bird
 	assign bird = ((x_crd >= BIRD_POS_X) & (x_crd < BIRD_POS_X + BIRD_SIZE) & (y_crd >= bird_up) & (y_crd < bird_down));
+	
 	
 	// Background - unused for now
 	assign back = (x_crd > 0) & (x_crd < 640) & (y_crd >= 0) & (y_crd < 480);

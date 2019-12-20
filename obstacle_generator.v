@@ -21,8 +21,7 @@
 module obstacle_generator(
 	input clk, 
 	input [3:0] randombit, 
-	input reset_score, reset_physics,
-	output obs1en, obs2en, obs3en,
+	input reset_score, reset_physics,        
 	output reg [6:0] score,
 	output reg [9:0] obs1x, obs1y, obs2x, obs2y, obs3x, obs3y
 	);
