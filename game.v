@@ -28,6 +28,7 @@ module game(
 	output blue_ch
 	);
 	localparam BIRD_POS_X = 100;
+	localparam BIRD_SIZE = 30;
 	
 	wire game_clk_g;
 	clock_divider #(32'd100000) div_g ( .clk(clk), .clk_out(game_clk_g));
@@ -40,13 +41,13 @@ module game(
 		.position(position)
 	);
 	
-	reg[9:0] g_up = 10'd0;
-	reg[9:0] g_down = 10'd40;
+	reg[9:0] bird_up = 10'd0;
+	reg[9:0] bird_down = BIRD_SIZE;
 	
 	always @(posedge game_clk_g)
 	begin
-		g_up = position - 40;
-		g_down = position;
+		bird_up = position - BIRD_SIZE;
+		bird_down = position;
 	end
 	
 	
@@ -88,11 +89,14 @@ module game(
 	
 	assign pipe_3_top = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= 0) & (y_crd < obs3y - 70);   
 	assign pipe_3_bot = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= obs3y + 70) & (y_crd < 480);
-	// Draw the squares
-	assign sq_g = ((x_crd >= BIRD_POS_X) & (x_crd < BIRD_POS_X + 40) & (y_crd >= g_up) & (y_crd < g_down));
+	
+	// Draw the bird
+	assign bird = ((x_crd >= BIRD_POS_X) & (x_crd < BIRD_POS_X + BIRD_SIZE) & (y_crd >= bird_up) & (y_crd < bird_down));
+	
+	// Background - unused for now
 	assign back = (x_crd > 0) & (x_crd < 640) & (y_crd >= 0) & (y_crd < 480);
 	
 	assign red_ch = pipe_1_top | pipe_1_bot | pipe_2_top | pipe_2_bot | pipe_3_top | pipe_3_bot;
-	assign green_ch = sq_g | pipe_2_top | pipe_2_bot;
+	assign green_ch = bird | pipe_2_top | pipe_2_bot;
 	assign blue_ch = pipe_3_top | pipe_3_bot;
 endmodule
