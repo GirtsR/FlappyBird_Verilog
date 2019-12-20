@@ -61,7 +61,7 @@ module game(
 	
 	// Pipe obstacle generation
 	reg reset_score = 0;
-	reg reset_physics = 0;
+	reg reset_physics = 1;	// Game starts when space is pressed
 	wire obs1en, obs2en, obs3en;
 	wire [6:0] score;
 	wire [9:0] obs1x, obs1y, obs2x, obs2y, obs3x, obs3y;
@@ -81,6 +81,11 @@ module game(
 		.obs3x(obs3x),
 		.obs3y(obs3y)
 	);
+	
+	always @(posedge game_clk_g)
+	begin
+		if (btn_pressed && reset_physics) reset_physics = 0;
+	end
 
 	assign score_out = score;
 	
