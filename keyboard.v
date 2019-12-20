@@ -149,7 +149,7 @@ module keyboard(
 	end
 	
 //	assign led = keycode;
-	assign led[7:6] = state_reg;
+	assign led[7] = space_pressed_reg;
 //	assign J1 = keycode[3:0];
 //	assign J2 = keycode[7:4];
 //	assign led = debounce [15:0];

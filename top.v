@@ -37,6 +37,9 @@ module top(
 
 	wire [9:0] x;  
 	wire [9:0] y;
+	
+	wire [6:0] score;
+	wire [7:0] led_keyboard;
 
 	vga_timing display (
 	  .clk(clk),
@@ -45,12 +48,12 @@ module top(
 	  .o_x(x),
 	  .o_y(y)
 	);
-
+	
 	keyboard keyboard (
 		.clk(clk),
 		.ps2c(ps2c),
 		.ps2d(ps2d),
-		.led(led),
+		.led(led_keyboard),
 		.spacebar_pressed(spacebar_pressed)
 	);
 
@@ -61,6 +64,12 @@ module top(
 			.btn_pressed(spacebar_pressed),
 			.red_ch(red),
 			.green_ch(green),
-			.blue_ch(blue)
+			.blue_ch(blue),
+			.score_out(score)
 			);
+	
+	// LEDs 0..6 show the score
+	assign led [6:0] = score;
+	// LED 7 blinks when space is pressed
+	assign led [7] = led_keyboard [7];
 endmodule

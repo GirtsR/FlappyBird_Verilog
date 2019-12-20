@@ -25,7 +25,8 @@ module game(
 	input btn_pressed,
 	output red_ch,
 	output green_ch,
-	output blue_ch
+	output blue_ch,
+	output [6:0] score_out
 	);
 	localparam BIRD_POS_X = 100;
 	localparam BIRD_SIZE = 30;
@@ -81,6 +82,8 @@ module game(
 		.obs3y(obs3y)
 	);
 
+	assign score_out = score;
+	
 	assign pipe_1_top = (x_crd > obs1x - 40) & (x_crd < obs1x) & (y_crd >= 0) & (y_crd < obs1y - 70);   
 	assign pipe_1_bot = (x_crd > obs1x - 40) & (x_crd < obs1x) & (y_crd >= obs1y + 70) & (y_crd < 480);
 	
