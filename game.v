@@ -28,8 +28,9 @@ module game(
 	output blue_ch,
 	output [6:0] score_out
 	);
-	localparam BIRD_POS_X = 100;
+	localparam BIRD_POS_X_L = 100;
 	localparam BIRD_SIZE = 30;
+	localparam BIRD_POS_X_R = BIRD_POS_X_L + BIRD_SIZE;
 	
 	wire game_clk_g;
 	clock_divider #(32'd100000) div_g ( .clk(clk), .clk_out(game_clk_g));
@@ -50,7 +51,6 @@ module game(
 		bird_up = position - BIRD_SIZE;
 		bird_down = position;
 	end
-	
 	
 	// Random number generation from bird position
 	wire [3:0] random;
@@ -77,21 +77,29 @@ module game(
 		.obs3x(obs3x),
 		.obs3y(obs3y)
 	);
+	reg collision1 = 0;
+	reg collision2 = 0;
+	reg collision3 = 0;
 	
-	assign bird_max_x = BIRD_POS_X + BIRD_SIZE;
-	
-	always @(posedge clk)
+	always @(posedge game_clk_g)
 	begin 
-	if (btn_pressed && reset_physics) reset_physics = 0;
-	
-	if (reset_physics == 0)
-	begin 
-		reset_physics = ((bird_max_x >= obs1x - 40 & bird_max_x <= obs1x) | (BIRD_POS_X >= obs1x - 40 & BIRD_POS_X <= obs1x)) & (bird_up < obs1y - 70 | bird_down > obs1y + 70) |
-							((bird_max_x >= obs2x - 40 & bird_max_x <= obs2x) | (BIRD_POS_X >= obs2x - 40 & BIRD_POS_X <= obs2x))& (bird_up < obs2y - 70 | bird_down > obs2y + 70) |
-							((bird_max_x >= obs3x - 40 & bird_max_x <= obs3x) | (BIRD_POS_X >= obs3x - 40 & BIRD_POS_X <= obs3x)) & (bird_up < obs3y - 70 | bird_down > obs3y + 70);
-	
-		reset_score = reset_physics;
-	end
+		if (btn_pressed && reset_physics) reset_physics = 0;
+		if (reset_physics == 0)
+		begin 
+			collision1 = (bird_up < obs1y - 70 || bird_down > obs1y + 70) &&
+					((BIRD_POS_X_L > obs1x - 40 && BIRD_POS_X_L < obs1x) |
+					(BIRD_POS_X_R < obs1x && BIRD_POS_X_R > obs1x - 40));
+					
+			collision2 = (bird_up < obs2y - 70 || bird_down > obs2y + 70) &&
+					((BIRD_POS_X_L > obs2x - 40 && BIRD_POS_X_L < obs2x) |
+					(BIRD_POS_X_R < obs2x && BIRD_POS_X_R > obs2x - 40));
+			
+			collision3 = (bird_up < obs3y - 70 || bird_down > obs3y + 70) &&
+					((BIRD_POS_X_L > obs3x - 40 && BIRD_POS_X_L < obs3x) |
+					(BIRD_POS_X_R < obs3x && BIRD_POS_X_R > obs3x - 40));
+		
+			reset_physics = collision1 || collision2 || collision3;
+		end
 	end					 
 
 	assign score_out = score;
@@ -106,7 +114,7 @@ module game(
 	assign pipe_3_bot = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= obs3y + 70) & (y_crd < 480);
 	
 	// Draw the bird
-	assign bird = ((x_crd >= BIRD_POS_X) & (x_crd < BIRD_POS_X + BIRD_SIZE) & (y_crd >= bird_up) & (y_crd < bird_down));
+	assign bird = ((x_crd >= BIRD_POS_X_L) & (x_crd < BIRD_POS_X_R) & (y_crd >= bird_up) & (y_crd < bird_down));
 	
 	
 	// Background - unused for now
