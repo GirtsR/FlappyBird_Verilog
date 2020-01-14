@@ -1,23 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    11:39:34 11/29/2019 
-// Design Name: 
-// Module Name:    game 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+
 module game(
 	input clk,
 	input [9:0] x_crd,
@@ -31,6 +13,8 @@ module game(
 	localparam BIRD_POS_X_L = 100;
 	localparam BIRD_SIZE = 30;
 	localparam BIRD_POS_X_R = BIRD_POS_X_L + BIRD_SIZE;
+	localparam SCR_WIDTH = 640;
+	localparam SCR_HEIGHT = 480;
 	
 	wire game_clk_g;
 	clock_divider #(32'd100000) div_g ( .clk(clk), .clk_out(game_clk_g));
@@ -77,6 +61,7 @@ module game(
 		.obs3x(obs3x),
 		.obs3y(obs3y)
 	);
+	
 	reg collision1 = 0;
 	reg collision2 = 0;
 	reg collision3 = 0;
@@ -103,24 +88,23 @@ module game(
 	end					 
 
 	assign score_out = score;
-	
+
 	assign pipe_1_top = (x_crd > obs1x - 40) & (x_crd < obs1x) & (y_crd >= 0) & (y_crd < obs1y - 70);   
-	assign pipe_1_bot = (x_crd > obs1x - 40) & (x_crd < obs1x) & (y_crd >= obs1y + 70) & (y_crd < 480);
+	assign pipe_1_bot = (x_crd > obs1x - 40) & (x_crd < obs1x) & (y_crd >= obs1y + 70) & (y_crd < SCR_HEIGHT);
 	
 	assign pipe_2_top = (x_crd > obs2x - 40) & (x_crd < obs2x) & (y_crd >= 0) & (y_crd < obs2y - 70);   
-	assign pipe_2_bot = (x_crd > obs2x - 40) & (x_crd < obs2x) & (y_crd >= obs2y + 70) & (y_crd < 480);
+	assign pipe_2_bot = (x_crd > obs2x - 40) & (x_crd < obs2x) & (y_crd >= obs2y + 70) & (y_crd < SCR_HEIGHT);
 	
 	assign pipe_3_top = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= 0) & (y_crd < obs3y - 70);   
-	assign pipe_3_bot = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= obs3y + 70) & (y_crd < 480);
+	assign pipe_3_bot = (x_crd > obs3x - 40) & (x_crd < obs3x) & (y_crd >= obs3y + 70) & (y_crd < SCR_HEIGHT);
 	
 	// Draw the bird
 	assign bird = ((x_crd >= BIRD_POS_X_L) & (x_crd < BIRD_POS_X_R) & (y_crd >= bird_up) & (y_crd < bird_down));
-	
-	
-	// Background - unused for now
-	assign back = (x_crd > 0) & (x_crd < 640) & (y_crd >= 0) & (y_crd < 480);
-	
+
+	wire score_display;
+	point_display #(550, 10) p_display(.x(x_crd), .y(y_crd), .score(score), .draw_display(score_display));
+
 	assign red_ch = pipe_1_top | pipe_1_bot | pipe_2_top | pipe_2_bot | pipe_3_top | pipe_3_bot;
-	assign green_ch = bird | pipe_2_top | pipe_2_bot;
-	assign blue_ch = pipe_3_top | pipe_3_bot;
+	assign green_ch = bird | pipe_2_top | pipe_2_bot | score_display;
+	assign blue_ch = pipe_3_top | pipe_3_bot | score_display;
 endmodule
