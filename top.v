@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module top(
 	input clk,          // board clock: 50 MHz on Spartan3E
+	input btn_west,
 	// VGA outputs
 	output hsync,       // horizontal sync output
 	output vsync,       // vertical sync output
@@ -56,12 +57,21 @@ module top(
 		.led(led_keyboard),
 		.spacebar_pressed(spacebar_pressed)
 	);
+	
+	reg button = 0;
+	always @(posedge clk)
+	begin
+		if (btn_west) button = 1;
+		else button = 0;
+	end
+	
+	assign button_pressed = spacebar_pressed | button;
 
 	game flappy_bird(
 			.clk(clk),
 			.x_crd(x),
 			.y_crd(y),
-			.btn_pressed(spacebar_pressed),
+			.btn_pressed(button_pressed),
 			.red_ch(red),
 			.green_ch(green),
 			.blue_ch(blue),

@@ -16,6 +16,7 @@ NET "led[5]" LOC = "D11" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
 NET "led[6]" LOC = "E9" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
 NET "led[7]" LOC = "F9" | IOSTANDARD = LVTTL | SLEW = SLOW | DRIVE = 8;
 
+NET "btn_west" LOC = "D18" | IOSTANDARD = LVTTL | PULLDOWN;
 
 // VGA connector mapping
 NET "hsync"  LOC = "F15" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST ;
